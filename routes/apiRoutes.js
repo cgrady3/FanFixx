@@ -52,7 +52,7 @@ module.exports = function (app) {
   app.get("/api/query/user/:userid", function (req, res) {
     db.Query.findAll({
       where: {
-        userId: req.params.userid,
+        UserId: req.params.userid,
       },
     }).then(function (data) {
       res.json(data);
