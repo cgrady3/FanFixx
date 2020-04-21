@@ -16,7 +16,7 @@ Fanfixx is a full-stack application which allows users easy access to player and
 
 ---
 
-In order to use Fanfixx, begin by visiting the [site](https://mlipphard.github.io/Fanfixx).
+In order to use Fanfixx, begin by visiting the [site](https://fan-fixx.herokuapp.com/).
 
 To add a player to your dashboard and make their information available for retrieval, type their name and instagram handle into the search bar at the top of the page.
 
@@ -37,10 +37,10 @@ If desired, Fanfixx can be cloned to a local machine easily.
 To do so, page the following links into your terminal:
 
 Via SSH
-`git@github.com:Mlipphardt/Fanfixx.git`
+`git@github.com:cgrady3/FanFixx.git`
 
 Via HTTPS
-`https://github.com/Mlipphardt/Fanfixx.git`
+`https://fan-fixx.herokuapp.com/`
 
 Once cloned, simply opening index.html will start the application in your preferred browser.
 

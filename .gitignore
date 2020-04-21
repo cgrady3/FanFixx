@@ -1,9 +1,8 @@
-config.js
+config/config.json
 APIkeys.js
 .DS_Store
 node_modules
 npm-debug.log
 .env
-config.json
 ./assets/javascript/config.js 
 node_modules

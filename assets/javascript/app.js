@@ -7,23 +7,35 @@ var userQuery = "";
 var cheerio = require("cheerio");
 var axios = require("axios");
 
-// Firebase
-var caroFirebaseConfig = {
-  apiKey: "AIzaSyAAuD528OgJy5QRxX2z7kdTIgok_Gwcobs",
-  authDomain: "project-one-dff4c.firebaseapp.com",
-  databaseURL: "https://project-one-dff4c.firebaseio.com",
-  projectId: "project-one-dff4c",
-  storageBucket: "project-one-dff4c.appspot.com",
-  messagingSenderId: "1062091675299",
-  appId: "1:1062091675299:web:1651175bb75de723da5116",
-};
-
-// Initialize Firebase
-firebase.initializeApp(caroFirebaseConfig);
-var db = firebase.database();
-
-// initially hide popup content
+// initially hide some content
 $(".popup-content").hide();
+$(".user-id").hide();
+
+// api shortcuts
+var api = {
+  submit: function (res, req) {
+    return $.ajax({
+      headers: {
+        "Content-Type": "application/json",
+      },
+      type: "POST",
+      url: "/api/" + req,
+      data: JSON.stringify(res),
+    });
+  },
+  grab: function (req) {
+    return $.ajax({
+      url: "/api/" + req,
+      type: "GET",
+    });
+  },
+  annihilate: function (req) {
+    return $.ajax({
+      url: "/api/" + req,
+      type: "DELETE",
+    });
+  },
+};
 
 function resetStatsPage() {
   $("#playerName").text();
@@ -49,9 +61,8 @@ function resetTwitterPage() {
 $("#sportsQuery-submit").on("click", function (event) {
   event.preventDefault();
 
-  let sportsItem = $("#sportsQuery-text").val().trim();
-  let instaItem = $("#instaQuery-text").val().trim();
-  let twitterItem = $("#twitterQuery-text").val().trim();
+  $("#error-warning").empty();
+  let errorArr = [];
 
   //pull instagram info from api
   var instaSettings = {
@@ -69,35 +80,50 @@ $("#sportsQuery-submit").on("click", function (event) {
   };
 
   $.ajax(instaSettings).done(function (response) {
-    console.log(response);
-
-    let avatar = response.avatar;
-
-    if (sportsItem === "" || instaItem === "" || twitterItem === "") {
-    } else {
-      // pass to firebase
-      db.ref().push({
-        userQuery: sportsItem,
-        instagram: instaItem,
-        twitter: twitterItem,
-        avatar: avatar,
-      });
-    }
-
-    //Resets search text
-    $("#sportsQuery-text").val("");
-    $("#instaQuery-text").val("");
-    $("#twitterQuery-text").val("");
+    var avatar = response.avatar;
   });
+
+  var newQuery = {
+    userQuery: $("#sportsQuery-text").val().trim(),
+    instagram: $("#instaQuery-text").val().trim(),
+    twitter: $("#twitterQuery-text").val().trim(),
+    avatar: avatar,
+  };
+
+  if (newQuery.userQuery === "") {
+    errorArr.push("Enter a player or team to search");
+  }
+  if (newQuery.instagram === "") {
+    errorArr.push(
+      "Enter the appropriate Instagram Handle, not including the @"
+    );
+  }
+  if (newQuery.twitter === "") {
+    errorArr.push("Enter the appropriate Twitter Handle, not including the @");
+  }
+
+  if (errorArr.length === 0) {
+    api.submit(newQuery, "query").then((response) => {
+      //Resets search text
+      $("#sportsQuery-text").val("");
+      $("#instaQuery-text").val("");
+      $("#twitterQuery-text").val("");
+      location.reload();
+    });
+  } else {
+    $.each(errorArr, (index, error) => {
+      let newError = $(`<p> ${error(index)} </p>`);
+      $("#error-warning").append(newError);
+    });
+  }
 });
 
 // to take in user queries on hitting enter (top box)
 $("#sportsQuery-text").on("keydown", function (event) {
   if (event.keyCode === 13) {
-    let sportsItem = $("#sportsQuery-text").val().trim();
-    let instaItem = $("#instaQuery-text").val().trim();
-    let twitterItem = $("#twitterQuery-text").val().trim();
-
+    $("#error-warning").empty();
+    let errorArr = [];
+  
     //pull instagram info from api
     var instaSettings = {
       async: true,
@@ -112,84 +138,53 @@ $("#sportsQuery-text").on("keydown", function (event) {
         "x-rapidapi-key": "24e7ba1147msh84b2d9ba4889f35p191fc7jsn48829d32f784",
       },
     };
-
+  
     $.ajax(instaSettings).done(function (response) {
-      console.log(response);
-
-      let avatar = response.avatar;
-
-      if (sportsItem === "" || instaItem === "" || twitterItem === "") {
-      } else {
-        // pass to firebase
-        db.ref().push({
-          userQuery: sportsItem,
-          instagram: instaItem,
-          twitter: twitterItem,
-          avatar: avatar,
-        });
-      }
-
-      //Resets search text
-      $("#sportsQuery-text").val("");
-      $("#instaQuery-text").val("");
-      $("#twitterQuery-text").val("");
+      var avatar = response.avatar;
     });
-  }
-});
-
-// to take in user queries on hitting enter (middle box)
-$("#instaQuery-text").on("keydown", function (event) {
-  if (event.keyCode === 13) {
-    let sportsItem = $("#sportsQuery-text").val().trim();
-    let instaItem = $("#instaQuery-text").val().trim();
-    let twitterItem = $("#twitterQuery-text").val().trim();
-
-    //pull instagram info from api
-    var instaSettings = {
-      async: true,
-      crossDomain: true,
-      url:
-        "https://instagram9.p.rapidapi.com/api/instagram?kullaniciadi=" +
-        instaItem +
-        "&lang=en",
-      method: "GET",
-      headers: {
-        "x-rapidapi-host": "instagram9.p.rapidapi.com",
-        "x-rapidapi-key": "24e7ba1147msh84b2d9ba4889f35p191fc7jsn48829d32f784",
-      },
+  
+    var newQuery = {
+      userQuery: $("#sportsQuery-text").val().trim(),
+      instagram: $("#instaQuery-text").val().trim(),
+      twitter: $("#twitterQuery-text").val().trim(),
+      avatar: avatar,
     };
-
-    $.ajax(instaSettings).done(function (response) {
-      console.log(response);
-
-      let avatar = response.avatar;
-
-      if (sportsItem === "" || instaItem === "" || twitterItem === "") {
-      } else {
-        // pass to firebase
-        db.ref().push({
-          userQuery: sportsItem,
-          instagram: instaItem,
-          twitter: twitterItem,
-          avatar: avatar,
-        });
-      }
-
-      //Resets search text
-      $("#sportsQuery-text").val("");
-      $("#instaQuery-text").val("");
-      $("#twitterQuery-text").val("");
-    });
+  
+    if (newQuery.userQuery === "") {
+      errorArr.push("Enter a player or team to search");
+    }
+    if (newQuery.instagram === "") {
+      errorArr.push(
+        "Enter the appropriate Instagram Handle, not including the @"
+      );
+    }
+    if (newQuery.twitter === "") {
+      errorArr.push("Enter the appropriate Twitter Handle, not including the @");
+    }
+  
+    if (errorArr.length === 0) {
+      api.submit(newQuery, "query").then((response) => {
+        //Resets search text
+        $("#sportsQuery-text").val("");
+        $("#instaQuery-text").val("");
+        $("#twitterQuery-text").val("");
+        location.reload();
+      });
+    } else {
+      $.each(errorArr, (index, error) => {
+        let newError = $(`<p> ${error(index)} </p>`);
+        $("#error-warning").append(newError);
+      });
+    }
   }
 });
 
 // to take in user queries on hitting enter (bottom box)
 $("#instaQuery-text").on("keydown", function (event) {
   if (event.keyCode === 13) {
-    let sportsItem = $("#sportsQuery-text").val().trim();
-    let instaItem = $("#instaQuery-text").val().trim();
-    let twitterItem = $("#twitterQuery-text").val().trim();
-
+    $("#error-warning").empty();
+    let errorArr = [];
+  
     //pull instagram info from api
     var instaSettings = {
       async: true,
@@ -204,28 +199,104 @@ $("#instaQuery-text").on("keydown", function (event) {
         "x-rapidapi-key": "24e7ba1147msh84b2d9ba4889f35p191fc7jsn48829d32f784",
       },
     };
-
+  
     $.ajax(instaSettings).done(function (response) {
-      console.log(response);
-
-      let avatar = response.avatar;
-
-      if (sportsItem === "" || instaItem === "" || twitterItem === "") {
-      } else {
-        // pass to firebase
-        db.ref().push({
-          userQuery: sportsItem,
-          instagram: instaItem,
-          twitter: twitterItem,
-          avatar: avatar,
-        });
-      }
-
-      //Resets search text
-      $("#sportsQuery-text").val("");
-      $("#instaQuery-text").val("");
-      $("#twitterQuery-text").val("");
+      var avatar = response.avatar;
     });
+  
+    var newQuery = {
+      userQuery: $("#sportsQuery-text").val().trim(),
+      instagram: $("#instaQuery-text").val().trim(),
+      twitter: $("#twitterQuery-text").val().trim(),
+      avatar: avatar,
+    };
+  
+    if (newQuery.userQuery === "") {
+      errorArr.push("Enter a player or team to search");
+    }
+    if (newQuery.instagram === "") {
+      errorArr.push(
+        "Enter the appropriate Instagram Handle, not including the @"
+      );
+    }
+    if (newQuery.twitter === "") {
+      errorArr.push("Enter the appropriate Twitter Handle, not including the @");
+    }
+  
+    if (errorArr.length === 0) {
+      api.submit(newQuery, "query").then((response) => {
+        //Resets search text
+        $("#sportsQuery-text").val("");
+        $("#instaQuery-text").val("");
+        $("#twitterQuery-text").val("");
+        location.reload();
+      });
+    } else {
+      $.each(errorArr, (index, error) => {
+        let newError = $(`<p> ${error(index)} </p>`);
+        $("#error-warning").append(newError);
+      });
+    }
+  }
+});
+
+$("#twitterQuery-text").on("keydown", function (event) {
+  if (event.keyCode === 13) {
+    $("#error-warning").empty();
+    let errorArr = [];
+  
+    //pull instagram info from api
+    var instaSettings = {
+      async: true,
+      crossDomain: true,
+      url:
+        "https://instagram9.p.rapidapi.com/api/instagram?kullaniciadi=" +
+        instaItem +
+        "&lang=en",
+      method: "GET",
+      headers: {
+        "x-rapidapi-host": "instagram9.p.rapidapi.com",
+        "x-rapidapi-key": "24e7ba1147msh84b2d9ba4889f35p191fc7jsn48829d32f784",
+      },
+    };
+  
+    $.ajax(instaSettings).done(function (response) {
+      var avatar = response.avatar;
+    });
+  
+    var newQuery = {
+      userQuery: $("#sportsQuery-text").val().trim(),
+      instagram: $("#instaQuery-text").val().trim(),
+      twitter: $("#twitterQuery-text").val().trim(),
+      avatar: avatar,
+    };
+  
+    if (newQuery.userQuery === "") {
+      errorArr.push("Enter a player or team to search");
+    }
+    if (newQuery.instagram === "") {
+      errorArr.push(
+        "Enter the appropriate Instagram Handle, not including the @"
+      );
+    }
+    if (newQuery.twitter === "") {
+      errorArr.push("Enter the appropriate Twitter Handle, not including the @");
+    }
+  
+    if (errorArr.length === 0) {
+      api.submit(newQuery, "query").then((response) => {
+        //Resets search text
+        $("#sportsQuery-text").val("");
+        $("#instaQuery-text").val("");
+        $("#twitterQuery-text").val("");
+        location.reload();
+      });
+    } else {
+      $.each(errorArr, (index, error) => {
+        let newError = $(`<p> ${error(index)} </p>`);
+        $("#error-warning").append(newError);
+      });
+    }
   }
 });
 
@@ -490,8 +561,14 @@ function instaInfo() {
   });
 }
 
-function twitterInfo(){
-  
+function twitterInfo() {
+  let twitterHandle = $(this).attr("data-twitter");
+
+  api.submit("twitter/" + twitterHandle).then(function(response){
+    for (let i = 0; i < response.length; i++){
+      
+    }
+  })
 }
 
 function playerConfirmation() {
