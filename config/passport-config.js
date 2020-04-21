@@ -12,7 +12,7 @@ passport.use(
       passReqToCallback: true
     },
     function(req, username, password, done) {
-      db.users
+      db.Users
         .findOne({ where: { username: username } })
         .then(function(err, user) {
           if (err) {
@@ -23,7 +23,7 @@ passport.use(
               message: "username is already in use."
             });
           }
-          db.users
+          db.Users
             .create({
               username: username,
               password: password
@@ -44,7 +44,7 @@ passport.use(
       usernameField: "username"
     },
     function(username, password, done) {
-      db.users.findOne({ where: { username: username } }).then(function(user) {
+      db.Users.findOne({ where: { username: username } }).then(function(user) {
         if (!user) {
           return done(null, false, { message: "username incorrect" });
         }

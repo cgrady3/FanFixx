@@ -2,6 +2,7 @@
 var sportsItem = "";
 var queryLink = "#";
 var userQuery = "";
+var avatar;
 var userid = $(".user-id").text().trim();
 
 // initially hide some content
@@ -89,6 +90,9 @@ function resetTwitterPage() {
 // Click event for search button
 $("#sportsQuery-submit").on("click", function (event) {
   event.preventDefault();
+  let userQuery = $("#sportsQuery-text").val().trim();
+  let instagram = $("#instaQuery-text").val().trim();
+  let twitter = $("#twitterQuery-text").val().trim();
 
   $("#error-warning").empty();
   let errorArr = [];
@@ -99,7 +103,7 @@ $("#sportsQuery-submit").on("click", function (event) {
     crossDomain: true,
     url:
       "https://instagram9.p.rapidapi.com/api/instagram?kullaniciadi=" +
-      instaItem +
+      instagram +
       "&lang=en",
     method: "GET",
     headers: {
@@ -109,42 +113,45 @@ $("#sportsQuery-submit").on("click", function (event) {
   };
 
   $.ajax(instaSettings).done(function (response) {
-    var avatar = response.avatar;
+    avatar = response.avatar;
+
+    var newQuery = {
+      userQuery: userQuery,
+      instagram: instagram,
+      twitter: twitter,
+      avatar: avatar,
+      UserID: userid,
+    };
+    console.log(newQuery);
+    if (newQuery.userQuery === "") {
+      errorArr.push("Enter a player or team to search");
+    }
+    if (newQuery.instagram === "") {
+      errorArr.push(
+        "Enter the appropriate Instagram Handle, not including the @"
+      );
+    }
+    if (newQuery.twitter === "") {
+      errorArr.push(
+        "Enter the appropriate Twitter Handle, not including the @"
+      );
+    }
+    if (errorArr.length === 0) {
+      api.submit(newQuery, "query").then((response) => {
+        console.log("ressssss: "  + response)
+        //Resets search text
+        $("#sportsQuery-text").val("");
+        $("#instaQuery-text").val("");
+        $("#twitterQuery-text").val("");
+        location.reload();
+      });
+    } else {
+      $.each(errorArr, (index, error) => {
+        let newError = $(`<p> ${error(index)} </p>`);
+        $("#error-warning").append(newError);
+      });
+    }
   });
-
-  var newQuery = {
-    userQuery: $("#sportsQuery-text").val().trim(),
-    instagram: $("#instaQuery-text").val().trim(),
-    twitter: $("#twitterQuery-text").val().trim(),
-    avatar: avatar,
-  };
-
-  if (newQuery.userQuery === "") {
-    errorArr.push("Enter a player or team to search");
-  }
-  if (newQuery.instagram === "") {
-    errorArr.push(
-      "Enter the appropriate Instagram Handle, not including the @"
-    );
-  }
-  if (newQuery.twitter === "") {
-    errorArr.push("Enter the appropriate Twitter Handle, not including the @");
-  }
-
-  if (errorArr.length === 0) {
-    api.submit(newQuery, "query").then((response) => {
-      //Resets search text
-      $("#sportsQuery-text").val("");
-      $("#instaQuery-text").val("");
-      $("#twitterQuery-text").val("");
-      location.reload();
-    });
-  } else {
-    $.each(errorArr, (index, error) => {
-      let newError = $(`<p> ${error(index)} </p>`);
-      $("#error-warning").append(newError);
-    });
-  }
 });
 
 // to take in user queries on hitting enter (top box)
@@ -152,6 +159,9 @@ $("#sportsQuery-text").on("keydown", function (event) {
   if (event.keyCode === 13) {
     $("#error-warning").empty();
     let errorArr = [];
+    let userQuery = $("#sportsQuery-text").val().trim();
+    let instagram = $("#instaQuery-text").val().trim();
+    let twitter = $("#twitterQuery-text").val().trim();
 
     //pull instagram info from api
     var instaSettings = {
@@ -159,7 +169,7 @@ $("#sportsQuery-text").on("keydown", function (event) {
       crossDomain: true,
       url:
         "https://instagram9.p.rapidapi.com/api/instagram?kullaniciadi=" +
-        instaItem +
+        instagram +
         "&lang=en",
       method: "GET",
       headers: {
@@ -169,14 +179,15 @@ $("#sportsQuery-text").on("keydown", function (event) {
     };
 
     $.ajax(instaSettings).done(function (response) {
-      var avatar = response.avatar;
+      avatar = response.avatar;
     });
 
     var newQuery = {
-      userQuery: $("#sportsQuery-text").val().trim(),
-      instagram: $("#instaQuery-text").val().trim(),
-      twitter: $("#twitterQuery-text").val().trim(),
+      userQuery: userQuery,
+      instagram: instagram,
+      twitter: twitter,
       avatar: avatar,
+      UserID: userid,
     };
 
     if (newQuery.userQuery === "") {
@@ -215,6 +226,9 @@ $("#instaQuery-text").on("keydown", function (event) {
   if (event.keyCode === 13) {
     $("#error-warning").empty();
     let errorArr = [];
+    let userQuery = $("#sportsQuery-text").val().trim();
+    let instagram = $("#instaQuery-text").val().trim();
+    let twitter = $("#twitterQuery-text").val().trim();
 
     //pull instagram info from api
     var instaSettings = {
@@ -222,7 +236,7 @@ $("#instaQuery-text").on("keydown", function (event) {
       crossDomain: true,
       url:
         "https://instagram9.p.rapidapi.com/api/instagram?kullaniciadi=" +
-        instaItem +
+        instagram +
         "&lang=en",
       method: "GET",
       headers: {
@@ -232,14 +246,15 @@ $("#instaQuery-text").on("keydown", function (event) {
     };
 
     $.ajax(instaSettings).done(function (response) {
-      var avatar = response.avatar;
+      avatar = response.avatar;
     });
 
     var newQuery = {
-      userQuery: $("#sportsQuery-text").val().trim(),
-      instagram: $("#instaQuery-text").val().trim(),
-      twitter: $("#twitterQuery-text").val().trim(),
+      userQuery: userQuery,
+      instagram: instagram,
+      twitter: twitter,
       avatar: avatar,
+      UserID: userid,
     };
 
     if (newQuery.userQuery === "") {
@@ -277,6 +292,9 @@ $("#twitterQuery-text").on("keydown", function (event) {
   if (event.keyCode === 13) {
     $("#error-warning").empty();
     let errorArr = [];
+    let userQuery = $("#sportsQuery-text").val().trim();
+    let instagram = $("#instaQuery-text").val().trim();
+    let twitter = $("#twitterQuery-text").val().trim();
 
     //pull instagram info from api
     var instaSettings = {
@@ -284,7 +302,7 @@ $("#twitterQuery-text").on("keydown", function (event) {
       crossDomain: true,
       url:
         "https://instagram9.p.rapidapi.com/api/instagram?kullaniciadi=" +
-        instaItem +
+        instagram +
         "&lang=en",
       method: "GET",
       headers: {
@@ -294,14 +312,15 @@ $("#twitterQuery-text").on("keydown", function (event) {
     };
 
     $.ajax(instaSettings).done(function (response) {
-      var avatar = response.avatar;
+      avatar = response.avatar;
     });
 
     var newQuery = {
-      userQuery: $("#sportsQuery-text").val().trim(),
-      instagram: $("#instaQuery-text").val().trim(),
-      twitter: $("#twitterQuery-text").val().trim(),
+      userQuery: userQuery,
+      instagram: instagram,
+      twitter: twitter,
       avatar: avatar,
+      UserID: userid,
     };
 
     if (newQuery.userQuery === "") {
@@ -483,7 +502,7 @@ function sportsInfo() {
 
 // pull insta info from api
 function instaInfo() {
-  let instaItem = $(this).attr("data-insta");
+  let instagram = $(this).attr("data-insta");
 
   resetInstaPage();
 
@@ -493,7 +512,7 @@ function instaInfo() {
     crossDomain: true,
     url:
       "https://instagram9.p.rapidapi.com/api/instagram?kullaniciadi=" +
-      instaItem +
+      instagram +
       "&lang=en",
     method: "GET",
     headers: {

@@ -31,7 +31,7 @@ module.exports = function (sequelize, DataTypes) {
   });
 
   Query.associate = function (models) {
-    Query.belongsTo(models.users, {
+    Query.belongsTo(models.Users, {
       foreignKey: {
         allowNull: false,
       },
