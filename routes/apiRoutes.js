@@ -42,6 +42,12 @@ module.exports = function (app) {
     });
   });
 
+  app.get("api/query", function (req, res) {
+    db.Query.findAll({}).then(function (data) {
+      res.json(data);
+    });
+  });
+
   // Get all of users saved players/teams
   app.get("/api/query/user/:userid", function (req, res) {
     db.Query.findAll({
@@ -103,11 +109,10 @@ module.exports = function (app) {
           }
 
           var response = {
-            title: title,
-            link: link,
+            tweet: tweet,
             pic: pic,
           };
-          data.push(response)
+          data.push(response);
         });
       });
     res.json(data);

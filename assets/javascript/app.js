@@ -2,10 +2,7 @@
 var sportsItem = "";
 var queryLink = "#";
 var userQuery = "";
-
-// scrape setup
-var cheerio = require("cheerio");
-var axios = require("axios");
+var userid = $(".user-id").text().trim();
 
 // initially hide some content
 $(".popup-content").hide();
@@ -37,6 +34,38 @@ var api = {
   },
 };
 
+// populate users buttons
+api.grab("/query/user/" + userid).then(function (response) {
+  console.log(response);
+  let query = response.userQuery;
+  let insta = response.instagram;
+  let twitt = response.twitter;
+  let avatar = response.avatar;
+
+  // pass uppercase name to avatar label
+  let labelName = query.replace(/\b[a-z]/g, function (letter) {
+    return letter.toUpperCase();
+  });
+
+  //Creates buttons
+  var imgDiv = $('<div class="sports-btn">');
+  imgDiv.attr("data-name", query);
+  imgDiv.attr("data-insta", insta);
+  imgDiv.attr("data-twitter", twitt);
+
+  var sportsBtn = $("<a href=" + queryLink + " class='link'>");
+
+  var image = $(
+    '<img src="' + avatar + '" alt="sportsBlock" class="circle avatar-img">'
+  );
+  var label = $("<div class='label'>" + labelName + "</div>");
+  var innerBlock = sportsBtn.append(image).append(label);
+
+  var token = imgDiv.append(innerBlock);
+  //Append each button to home page
+  $("#buttons").append(token);
+});
+
 function resetStatsPage() {
   $("#playerName").text();
   $("#playerName").empty();
@@ -57,7 +86,7 @@ function resetTwitterPage() {
   $("#tweets").empty();
 }
 
-//Click event for search button
+// Click event for search button
 $("#sportsQuery-submit").on("click", function (event) {
   event.preventDefault();
 
@@ -123,7 +152,7 @@ $("#sportsQuery-text").on("keydown", function (event) {
   if (event.keyCode === 13) {
     $("#error-warning").empty();
     let errorArr = [];
-  
+
     //pull instagram info from api
     var instaSettings = {
       async: true,
@@ -138,18 +167,18 @@ $("#sportsQuery-text").on("keydown", function (event) {
         "x-rapidapi-key": "24e7ba1147msh84b2d9ba4889f35p191fc7jsn48829d32f784",
       },
     };
-  
+
     $.ajax(instaSettings).done(function (response) {
       var avatar = response.avatar;
     });
-  
+
     var newQuery = {
       userQuery: $("#sportsQuery-text").val().trim(),
       instagram: $("#instaQuery-text").val().trim(),
       twitter: $("#twitterQuery-text").val().trim(),
       avatar: avatar,
     };
-  
+
     if (newQuery.userQuery === "") {
       errorArr.push("Enter a player or team to search");
     }
@@ -159,9 +188,11 @@ $("#sportsQuery-text").on("keydown", function (event) {
       );
     }
     if (newQuery.twitter === "") {
-      errorArr.push("Enter the appropriate Twitter Handle, not including the @");
+      errorArr.push(
+        "Enter the appropriate Twitter Handle, not including the @"
+      );
     }
-  
+
     if (errorArr.length === 0) {
       api.submit(newQuery, "query").then((response) => {
         //Resets search text
@@ -184,7 +215,7 @@ $("#instaQuery-text").on("keydown", function (event) {
   if (event.keyCode === 13) {
     $("#error-warning").empty();
     let errorArr = [];
-  
+
     //pull instagram info from api
     var instaSettings = {
       async: true,
@@ -199,18 +230,18 @@ $("#instaQuery-text").on("keydown", function (event) {
         "x-rapidapi-key": "24e7ba1147msh84b2d9ba4889f35p191fc7jsn48829d32f784",
       },
     };
-  
+
     $.ajax(instaSettings).done(function (response) {
       var avatar = response.avatar;
     });
-  
+
     var newQuery = {
       userQuery: $("#sportsQuery-text").val().trim(),
       instagram: $("#instaQuery-text").val().trim(),
       twitter: $("#twitterQuery-text").val().trim(),
       avatar: avatar,
     };
-  
+
     if (newQuery.userQuery === "") {
       errorArr.push("Enter a player or team to search");
     }
@@ -220,9 +251,11 @@ $("#instaQuery-text").on("keydown", function (event) {
       );
     }
     if (newQuery.twitter === "") {
-      errorArr.push("Enter the appropriate Twitter Handle, not including the @");
+      errorArr.push(
+        "Enter the appropriate Twitter Handle, not including the @"
+      );
     }
-  
+
     if (errorArr.length === 0) {
       api.submit(newQuery, "query").then((response) => {
         //Resets search text
@@ -244,7 +277,7 @@ $("#twitterQuery-text").on("keydown", function (event) {
   if (event.keyCode === 13) {
     $("#error-warning").empty();
     let errorArr = [];
-  
+
     //pull instagram info from api
     var instaSettings = {
       async: true,
@@ -259,18 +292,18 @@ $("#twitterQuery-text").on("keydown", function (event) {
         "x-rapidapi-key": "24e7ba1147msh84b2d9ba4889f35p191fc7jsn48829d32f784",
       },
     };
-  
+
     $.ajax(instaSettings).done(function (response) {
       var avatar = response.avatar;
     });
-  
+
     var newQuery = {
       userQuery: $("#sportsQuery-text").val().trim(),
       instagram: $("#instaQuery-text").val().trim(),
       twitter: $("#twitterQuery-text").val().trim(),
       avatar: avatar,
     };
-  
+
     if (newQuery.userQuery === "") {
       errorArr.push("Enter a player or team to search");
     }
@@ -280,9 +313,11 @@ $("#twitterQuery-text").on("keydown", function (event) {
       );
     }
     if (newQuery.twitter === "") {
-      errorArr.push("Enter the appropriate Twitter Handle, not including the @");
+      errorArr.push(
+        "Enter the appropriate Twitter Handle, not including the @"
+      );
     }
-  
+
     if (errorArr.length === 0) {
       api.submit(newQuery, "query").then((response) => {
         //Resets search text
@@ -299,76 +334,6 @@ $("#twitterQuery-text").on("keydown", function (event) {
     }
   }
 });
-
-// make buttons from database
-db.ref().on("child_added", function (data) {
-  var dv = data.val();
-  let query = dv.userQuery;
-  let insta = dv.instagram;
-  let twitt = dv.twitter;
-  let avatar = dv.avatar;
-
-  // pass uppercase name to avatar label
-  let labelName = query.replace(/\b[a-z]/g, function (letter) {
-    return letter.toUpperCase();
-  });
-
-  //Creates buttons
-  var imgDiv = $('<div class="sports-btn">');
-  imgDiv.attr("data-name", query);
-  imgDiv.attr("data-insta", insta);
-  imgDiv.attr("data-twitter", twitt);
-
-  var sportsBtn = $("<a href=" + queryLink + " class='link'>");
-
-  var image = $(
-    '<img src="' + avatar + '" alt="sportsBlock" class="circle avatar-img">'
-  );
-  var label = $("<div class='label'>" + labelName + "</div>");
-  var innerBlock = sportsBtn.append(image).append(label);
-
-  var token = imgDiv.append(innerBlock);
-  //Append each button to home page
-  $("#buttons").append(token);
-}),
-  function (errorHandle) {
-    console.log("Errors occured: " + errorHandle.code);
-  };
-
-// initial button population from firebase
-db.ref().on(
-  "value",
-  function (data) {
-    dv = data.val();
-    let query = dv.userQuery;
-    let insta = dv.instagram;
-    let twitt = dv.twitter;
-    let avatar = dv.avatar;
-
-    if (data.child("userQuery").exists()) {
-      //Creates buttons
-      var imgDiv = $('<div class="sports-btn">');
-      imgDiv.attr("data-name", query);
-      imgDiv.attr("data-insta", insta);
-      imgDiv.attr("data-twitter", twitt);
-
-      var sportsBtn = $("<a href=" + queryLink + " class='link'>");
-
-      var image = $(
-        '<img src="' + avatar + '" alt="sportsBlock" class="circle avatar-img">'
-      );
-      var label = $("<div class='label'>" + query + "</div>");
-      var innerBlock = sportsBtn.append(image).append(label);
-
-      var token = imgDiv.append(innerBlock);
-      //Append each button to home page
-      $("#buttons").append(token);
-    }
-  },
-  function (errorHandle) {
-    console.log("Errors occured: " + errorHandle.code);
-  }
-);
 
 //Close button for popup, has a slow fade-out animation.
 $(".close").on("click", function () {
@@ -564,11 +529,18 @@ function instaInfo() {
 function twitterInfo() {
   let twitterHandle = $(this).attr("data-twitter");
 
-  api.submit("twitter/" + twitterHandle).then(function(response){
-    for (let i = 0; i < response.length; i++){
-      
+  api.submit("twitter/" + twitterHandle).then(function (response) {
+    console.log(response);
+    for (let i = 0; i < response.length; i++) {
+      let tweet = response.tweet;
+      if (pic) {
+        let pic = response.pic;
+      } else pic = "";
+
+      $("#tweet").append(tweet);
+      $("#tweetPic").append(pic);
     }
-  })
+  });
 }
 
 function playerConfirmation() {
