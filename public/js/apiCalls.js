@@ -212,8 +212,9 @@ function sportsInfo() {
   
   function twitterInfo() {
     let twitterHandle = $(this).attr("data-twitter");
+    console.log(twitterHandle)
   
-    api.submit("twitter/" + twitterHandle).then(function (response) {
+    api.grab("twitter/" + twitterHandle).then(function (response) {
       console.log(response);
       for (let i = 0; i < response.length; i++) {
         let tweet = response.tweet;

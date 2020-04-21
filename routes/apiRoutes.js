@@ -84,21 +84,20 @@ module.exports = function (app) {
   var axios = require("axios");
   // twitter scrape
   app.get("/api/twitter/:handle", function (req, res) {
+    var data = [];
     axios
       .get("https://twitter.com/" + req.params.handle)
       .then(function (response) {
         var $ = cheerio.load(response.data);
-        var data = [];
-        $("table.tweet").each(function (i, element) {
-          // In the currently selected element, look at its child elements (i.e., its a-tags),
-          // then save the values for any "href" attributes that the child elements may have
-          let tweet = $(element).children().attr("div.tweet-text");
-          let picText = $(element)
-            .children()
-            .attr("span.metadata")
-            .children()
-            .attr("a")
-            .text();
+        $("li.stream-item").each(function (i, element) {
+          var tweet = $(this).find("p.tweet-text").text();
+       
+          // let picText = $(element)
+          //   .children()
+          //   .attr("span.metadata")
+          //   .children()
+          //   .attr("a")
+          //   .text();
           let pic;
           if (picText === "View photo") {
             let pic = $(element)
@@ -112,7 +111,7 @@ module.exports = function (app) {
             tweet: tweet,
             pic: pic,
           };
-          data.push(response);
+          data.push(tweet);
         });
       });
     res.json(data);
