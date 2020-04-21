@@ -51,6 +51,7 @@ $(document).ready(function () {
       imgDiv.attr("data-name", query);
       imgDiv.attr("data-insta", insta);
       imgDiv.attr("data-twitter", twitt);
+      imgDiv.attr("data-id", buttonId);
       var deleteBtn = $('<button class="delete">delete</button>');
       deleteBtn.attr("data-id", buttonId);
 

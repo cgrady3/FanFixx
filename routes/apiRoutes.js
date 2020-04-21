@@ -1,12 +1,21 @@
 var db = require("../models");
 var bcrypt = require("bcryptjs");
+var cheerio = require("cheerio");
+var axios = require("axios");
 const passport = require("../config/passport-config");
 
 module.exports = function (app) {
   //Find all users. TODO: Don't let this grab passwords before production.
   app.get("/api/users", function (req, res) {
-    db.users.findAll({}).then(function (dbUsers) {
+    db.Users.findAll({}).then(function (dbUsers) {
       res.json(dbUsers);
+    });
+  });
+
+  // find all tweets
+  app.get("/api/tweets", function (req, res) {
+    db.Tweet.findAll({}).then(function (dbTweet) {
+      res.json(dbTweet);
     });
   });
 
@@ -79,41 +88,34 @@ module.exports = function (app) {
     });
   });
 
-  // scrape setup
-  var cheerio = require("cheerio");
-  var axios = require("axios");
   // twitter scrape
-  app.get("/api/twitter/:handle", function (req, res) {
-    var data = [];
+  app.get("/api/scrape/:handle", function (req, res) {
     axios
       .get("https://twitter.com/" + req.params.handle)
       .then(function (response) {
         var $ = cheerio.load(response.data);
-        $("li.stream-item").each(function (i, element) {
+        $("li.stream-item").each(function (index) {
           var tweet = $(this).find("p.tweet-text").text();
-       
-          // let picText = $(element)
-          //   .children()
-          //   .attr("span.metadata")
-          //   .children()
-          //   .attr("a")
-          //   .text();
-          let pic;
-          if (picText === "View photo") {
-            let pic = $(element)
-              .children()
-              .attr("span.metadata")
-              .children()
-              .attr("href");
-          }
-
-          var response = {
+          var pic = "";
+  
+          db.Tweet.create({
             tweet: tweet,
-            pic: pic,
-          };
-          data.push(tweet);
+            picture: pic,
+          })
+            .then((data) => {
+              console.log(data);
+            })
+            .catch((err) => console.log(err));
         });
       });
-    res.json(data);
+    res.json("scrape complete");
+  });
+
+  // get tweets of player/team
+  app.get("/api/twitter/:id", function (req, res) {
+    db.Tweet.findAll({ where: { QueryId: req.params.id } })
+    .then(function (data) {
+      res.json(data);
+    });
   });
 };
