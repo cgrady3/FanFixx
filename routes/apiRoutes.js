@@ -42,7 +42,7 @@ module.exports = function (app) {
     });
   });
 
-  app.get("api/query", function (req, res) {
+  app.get("/api/query", function (req, res) {
     db.Query.findAll({}).then(function (data) {
       res.json(data);
     });

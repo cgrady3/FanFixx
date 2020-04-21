@@ -120,7 +120,7 @@ $("#sportsQuery-submit").on("click", function (event) {
       instagram: instagram,
       twitter: twitter,
       avatar: avatar,
-      UserID: userid,
+      UserId: userid,
     };
     console.log(newQuery);
     if (newQuery.userQuery === "") {
@@ -187,7 +187,7 @@ $("#sportsQuery-text").on("keydown", function (event) {
       instagram: instagram,
       twitter: twitter,
       avatar: avatar,
-      UserID: userid,
+      UserId: userid,
     };
 
     if (newQuery.userQuery === "") {
@@ -254,7 +254,7 @@ $("#instaQuery-text").on("keydown", function (event) {
       instagram: instagram,
       twitter: twitter,
       avatar: avatar,
-      UserID: userid,
+      UserId: userid,
     };
 
     if (newQuery.userQuery === "") {
@@ -320,7 +320,7 @@ $("#twitterQuery-text").on("keydown", function (event) {
       instagram: instagram,
       twitter: twitter,
       avatar: avatar,
-      UserID: userid,
+      UserId: userid,
     };
 
     if (newQuery.userQuery === "") {

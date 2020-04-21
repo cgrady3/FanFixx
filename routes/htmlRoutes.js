@@ -15,10 +15,6 @@ module.exports = function (app) {
     res.render("home", { current_user: req.user });
   });
 
-  app.get("/FanPage", isAuthenticated, function (req, res) {
-    res.render("FanPage", { current_user: req.user });
-  });
-
   app.get("/logout", function (req, res) {
     req.logout();
     res.redirect("/login");
