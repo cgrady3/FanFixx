@@ -89,32 +89,38 @@ module.exports = function (app) {
   });
 
   // twitter scrape
-  app.get("/api/scrape/:handle", function (req, res) {
+  app.get("/api/scrape/:handle/:id", function (req, res) {
+    console.log("handle: " + req.params.handle)
+    let id = req.params.id;
     axios
       .get("https://twitter.com/" + req.params.handle)
       .then(function (response) {
+        
         var $ = cheerio.load(response.data);
         $("li.stream-item").each(function (index) {
           var tweet = $(this).find("p.tweet-text").text();
           var pic = "";
-  
+          console.log(tweet);
           db.Tweet.create({
             tweet: tweet,
             picture: pic,
+            QueryId: id,
           })
             .then((data) => {
               console.log(data);
             })
             .catch((err) => console.log(err));
         });
+
+        res.json("scrape complete");
       });
-    res.json("scrape complete");
   });
 
   // get tweets of player/team
   app.get("/api/twitter/:id", function (req, res) {
-    db.Tweet.findAll({ where: { QueryId: req.params.id } })
-    .then(function (data) {
+    db.Tweet.findAll({ where: { QueryId: req.params.id } }).then(function (
+      data
+    ) {
       res.json(data);
     });
   });

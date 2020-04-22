@@ -39,7 +39,6 @@ a:hover {
     line-height: .8;
     height: 35px;
     border: 1px solid #515252;
-    width: 160px;
     width: 168px;
     padding-left: 8px;
 }
@@ -50,7 +49,16 @@ a:hover {
     line-height: .8;
     height: 35px;
     border: 1px solid #515252;
-    width: 160px;
+    width: 168px;
+    padding-left: 8px;
+}
+
+#twitterQuery-text {
+    font-size: 14px;
+    border-radius: 2px;
+    line-height: .8;
+    height: 35px;
+    border: 1px solid #515252;
     width: 168px;
     padding-left: 8px;
 }
@@ -128,10 +136,6 @@ footer {
     text-align: left;
 }
 
-.query-box {
-    margin-top: -44px;
-}
-
 .card {
     background-color: rgba(124, 122, 119, 0.4);
     border-radius: 3px;
@@ -143,7 +147,7 @@ footer {
 
 .query-box {
     float: left;
-    margin-top: -40px;
+    margin-top: -50px;
 }
 
 #page-head {
@@ -177,7 +181,6 @@ footer {
     height: 600px;
     margin-bottom: 40px;
     color: #d3b15c;
-    border-radius: 0 6px 6px 0;
 }
 
 #stats {
@@ -190,6 +193,16 @@ footer {
     border-radius: 6px 0 0 6px;
 }
 
+#twitter {
+    background-color: rgba(57, 58, 55, 0.75);
+    padding: 15px;
+    overflow-y: scroll;
+    height: 600px;
+    margin-bottom: 40px;
+    color: #d3b15c;
+    border-radius: 0 6px 6px 0;
+}
+
 .photo {
     width: 300px;
     height: 300px;
@@ -198,6 +211,12 @@ footer {
 .photoLabel {
     font-size: 14px;
     margin: 10px 0px 20px;
+}
+
+.tweet {
+    font-size: 14px;
+    margin: 10px 0px 20px;
+    color: wheat
 }
 
 .col {
@@ -273,6 +292,13 @@ footer {
         padding-left: 8px;
         margin-top: 6px;
     }
+    #twitterQuery-text {
+        font-size: 14px;
+        height: 28px;
+        width: 160px;
+        padding-left: 8px;
+        margin-top: 6px;
+    }
     footer {
         padding: 5px;
         padding-top: 0px;
@@ -312,7 +338,6 @@ footer {
         height: 18px;
         width: 61px;
         font-size: 10px;
-        margin-top: 20px;
     }
     #sportsQuery-text {
         font-size: 11px;
@@ -322,6 +347,13 @@ footer {
         margin-top: 6px;
     }
     #instaQuery-text {
+        font-size: 11px;
+        height: 28px;
+        width: 124px;
+        padding-left: 2px;
+        margin-top: 6px;
+    }
+    #twitterQuery-text {
         font-size: 11px;
         height: 28px;
         width: 124px;
@@ -371,6 +403,14 @@ footer {
         margin-left: -20px;
     }
     #instaQuery-text {
+        font-size: 10px;
+        height: 20px;
+        width: 113px;
+        padding-left: 1px;
+        margin-top: 2px;
+        margin-left: -20px;
+    }
+    #twitterQuery-text {
         font-size: 10px;
         height: 20px;
         width: 113px;
@@ -428,7 +468,7 @@ footer {
         margin: 10px;
     }
     .query-box {
-        margin-top: -65px;
+        margin-top: -75px;
     }
 }
 
@@ -461,6 +501,14 @@ footer {
         margin-left: -8px;
     }
     #instaQuery-text {
+        font-size: 8px;
+        height: 12px;
+        width: 91px;
+        padding-left: 2px;
+        margin-top: 2px;
+        margin-left: -8px;
+    }
+    #twitterQuery-text {
         font-size: 8px;
         height: 12px;
         width: 91px;

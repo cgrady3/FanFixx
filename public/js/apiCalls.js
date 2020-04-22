@@ -211,25 +211,28 @@ function instaInfo() {
 }
 
 function twitterInfo() {
+  $(".popup-content").fadeIn("slow");
+  resetTwitterPage();
   let twitterHandle = $(this).attr("data-twitter");
   let id = $(this).attr("data-id");
   console.log(twitterHandle);
   console.log(id);
 
-  api.grab("scrape/" + twitterHandle).then(function (response) {
+  api.grab("scrape/" + twitterHandle + "/" + id).then(function (response) {
     console.log(response);
   });
   api.grab("twitter/" + id).then(function (response) {
-      console.log(response)
-    // for (let i = 0; i < response.length; i++) {
-    //   let tweet = response.tweet;
-    //   if (response.picture) {
-    //     let pic = response.picture;
-    //   } else pic = "";
-
-    //   $("#tweet").append(tweet);
-    //   $("#tweetPic").append(pic);
-    // }
+      
+    for (let i = 0; i < response.length; i++) {
+      
+      let tweet = $("<p class='tweet'>" + response[i].tweet + "</p>");
+      if (response.picture) {
+        let pic = response.picture;
+      } else pic = "";
+      console.log("api tweet "  + tweet)
+      $("#tweet").append(tweet);
+      $("#tweetPic").append(pic);
+    }
   });
 }
 
