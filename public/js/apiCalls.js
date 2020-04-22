@@ -219,20 +219,24 @@ function twitterInfo() {
   console.log(id);
 
   api.grab("scrape/" + twitterHandle + "/" + id).then(function (response) {
-    console.log(response);
+    console.log("scrape recieved");
   });
   api.grab("twitter/" + id).then(function (response) {
-      
+     
     for (let i = 0; i < response.length; i++) {
-      
+      console.log("link " + response[i].time)
+      console.log("tweet " + response[i].tweet)
+
       let tweet = $("<p class='tweet'>" + response[i].tweet + "</p>");
+      let link = $("<a href='" + response[i].time + "' class='link'>Check it out</a>");
       if (response.picture) {
         let pic = response.picture;
       } else pic = "";
-      console.log("api tweet "  + tweet)
-      $("#tweet").append(tweet);
-      $("#tweetPic").append(pic);
+      $("#twitter").append(tweet).append(link).append(pic);
     }
+  });
+  api.annihilate("twitter/" + id).then(function (response) {
+    console.log('tweets cleared')
   });
 }
 

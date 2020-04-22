@@ -99,11 +99,17 @@ module.exports = function (app) {
         var $ = cheerio.load(response.data);
         $("li.stream-item").each(function (index) {
           var tweet = $(this).find("p.tweet-text").text();
+          var fullTweet = $(this).find("p.tweet-text").text();
+
+          var splitTweet = fullTweet.split("https://");
+          var nottweet = splitTweet[0];
+          var link = splitTweet[1];
           var pic = "";
-          console.log(tweet);
+          var time = $(this).find("time").text();
           db.Tweet.create({
             tweet: tweet,
             picture: pic,
+            time: link,
             QueryId: id,
           })
             .then((data) => {
@@ -121,6 +127,15 @@ module.exports = function (app) {
     db.Tweet.findAll({ where: { QueryId: req.params.id } }).then(function (
       data
     ) {
+      res.json(data);
+    });
+  });
+
+  // clear tweets from database
+  app.delete("/api/twitter/:id", function (req, res) {
+    db.Tweet.destroy({
+      where: { QueryId: req.params.id }
+    }).then(function (data) {
       res.json(data);
     });
   });

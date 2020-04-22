@@ -8,6 +8,10 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      link: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     });
   
     Tweet.associate = function (models) {

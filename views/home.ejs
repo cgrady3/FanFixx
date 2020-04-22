@@ -23,7 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <!-- Favicon -->
     <link rel='icon' href='./images/favicon.ico' type='image/x-icon' />
-    <link rel="stylesheet" href="/styles/style.css" type="text/css"/>
+    <link rel="stylesheet" href="/styles/style.css" type="text/css" />
     <title>Fanfixx</title>
 </head>
 
@@ -32,14 +32,15 @@
         <%= current_user.id %>
     </div>
     <!-- Site Banner, outside of container to stretch across viewport -->
-    <div class="jumbotron text-center bg-info" id = "banner">
+    <div class="jumbotron text-center bg-info" id="banner">
         <!-- Aligns content to the right -->
         <div class="d-flex flex-row-reverse bd-highlight query-box">
 
             <div class="form-group">
                 <input type="text" class="form-control" id="sportsQuery-text" placeholder="Search Player or Team">
                 <input type="text" class="form-control" id="instaQuery-text" placeholder="Player or Team instagram">
-                <input type="text" class="form-control" id="twitterQuery-text" placeholder="Search Player or Team Twitter">
+                <input type="text" class="form-control" id="twitterQuery-text"
+                    placeholder="Search Player or Team Twitter">
                 <button type="submit" class="btn btn-primary" id="sportsQuery-submit">Submit</button>
             </div>
 
@@ -65,7 +66,7 @@
                 <div id="playerName"></div>
                 <p id="playerStats"></p>
                 <p id="playerTeam"></p>
-                <p id ="WinsandLosses"></p>
+                <p id="WinsandLosses"></p>
                 <p id="playerPosition"></p>
                 <div id="NextGames"></div>
                 <div id="LastGames"></div>
@@ -76,8 +77,6 @@
                 <div id="posts"></div>
             </div>
             <div class="col" id="twitter">
-                <div id="tweet"></div>
-                <div id="tweetPic"></div>
             </div>
         </div>
         <button class="close">Close</button>
